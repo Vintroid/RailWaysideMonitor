@@ -96,17 +96,18 @@ app.MapPost("/api/events", (WaysideEvent newEvent) =>
 
     if(device == null)
     {
-        return null;
+        return Results.NotFound("Device not found");
     } 
     
-    // updating device state
-    if(Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
+    // Check to see if state to update is valid
+    if(!Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
     {
-        device.State = parsedState;
+        return Results.BadRequest($"Invalid device state: {newEvent.NewState}");
     }
 
+    device.State = parsedState;
     events.Add(newEvent);
-    return newEvent;
+    return Results.Ok(newEvent);
 })
 .WithName("PostWaysideEvent");
 
