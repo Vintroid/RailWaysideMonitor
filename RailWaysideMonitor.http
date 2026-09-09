@@ -11,7 +11,7 @@ Accept: application/json
 ###
 
 GET {{RailWaysideMonitor_HostAddress}}/api/alerts
-Accept: application/application/json
+Accept: application/json
 
 ###
 
