@@ -86,13 +86,27 @@ app.MapGet("/api/events", () =>
 })
 .WithName("GetWaysideEvents");
 
-// Post for events
+// Post for events. Device state should be changed accordingly.
 app.MapPost("/api/events", (WaysideEvent newEvent) =>
 {   
     Console.WriteLine("POST /api/events");
+    
+    // checking for corresponding device
+    var device = devices.FirstOrDefault(device => newEvent.DeviceId == device.Id);
+
+    if(device == null)
+    {
+        return null;
+    } 
+    
+    // updating device state
+    if(Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
+    {
+        device.State = parsedState;
+    }
 
     events.Add(newEvent);
-    return events;
+    return newEvent;
 })
 .WithName("PostWaysideEvent");
 

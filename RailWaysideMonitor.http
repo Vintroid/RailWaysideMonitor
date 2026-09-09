@@ -16,5 +16,27 @@ Content-Type: application/json
 {
     "deviceId": "TRACK-A",
     "newState": "Occupied",
-    "timestamp": "2026-09-08T22:30:00"
+    "timestamp": "2026-09-08T22:45:00"
+}
+
+###
+
+POST {{RailWaysideMonitor_HostAddress}}/api/events
+Content-Type: application/json
+
+{
+    "deviceId": "DNE",
+    "newState": "Occupied",
+    "timestamp": "2026-09-08T22:45:00"
+}
+
+###
+
+POST {{RailWaysideMonitor_HostAddress}}/api/events
+Content-Type: application/json
+
+{
+    "deviceId": "TRACK-A",
+    "newState": "DNE",
+    "timestamp": "2026-09-08T22:45:00"
 }
