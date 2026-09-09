@@ -32,7 +32,22 @@ var devices = new[]
         Id = "TRACK-A",
         Type = "TrackCircuit",
         State = DeviceState.Cleared
+    },
+
+    new WaysideDevice
+    {
+        Id = "SIGNAL-A",
+        Type = "Signal",
+        State = DeviceState.Occupied
+    },
+
+    new WaysideDevice
+    {
+        Id = "SWITCH-A",
+        Type = "Switch",
+        State = DeviceState.Warning
     }
+
 };
 
 
