@@ -9,8 +9,8 @@ This project is a simple wayside monitoring API. It manages and processes a simu
 - GET processing for devices, events, and alerts
 - POST processing for events
 - Device state updates
-- Request validation with Results.
-- Test cases
+- Request validation with appropriate HTTP responses.
+- Manual API test requests.
 
 ## What is used?
 .NET 10
@@ -29,7 +29,7 @@ GET /api/alerts
 3. State validation
 4. Update device state
 5. Store Event
-6. Generate alert is applicable
+6. Generate alert if applicable
 
 ## How to run?
 - Command Prompt
@@ -37,12 +37,12 @@ GET /api/alerts
 - .http file has test requests
 
 ## Current Limitations
-- Data gets wiped on restart since inside memory.
-- Device states are global using an enum.
+- Data is stored in memory and reset when application restarts.
+- Device states currently use a shared enum for all types.
 - Alert logic is simple and covers one case.
 
 ## Planned Improvements
-- PostgreSQL persistence for memory
+- PostgreSQL persistence
 - Docker containerization
 - Automated unit && integration tests
 - Separate device simulator component
@@ -50,4 +50,4 @@ GET /api/alerts
 - Kubernetes deployment
 
 ## Disclaimer
-This project is a personal software project used to learn and practice. It does cover and implement real railway signaling or safety logic that one would find in professional environments.
+This project is a personal software project used to learn and practice. It does not cover and implement real railway signaling or safety logic that one would find in professional environments.
