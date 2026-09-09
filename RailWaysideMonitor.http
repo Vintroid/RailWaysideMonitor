@@ -10,11 +10,38 @@ Accept: application/json
 
 ###
 
+GET {{RailWaysideMonitor_HostAddress}}/api/alerts
+Accept: application/application/json
+
+###
+
 POST {{RailWaysideMonitor_HostAddress}}/api/events
 Content-Type: application/json
 
 {
     "deviceId": "TRACK-A",
+    "newState": "Occupied",
+    "timestamp": "2026-09-08T22:45:00"
+}
+
+###
+
+POST {{RailWaysideMonitor_HostAddress}}/api/events
+Content-Type: application/json
+
+{
+    "deviceId": "TRACK-A",
+    "newState": "Warning",
+    "timestamp": "2026-09-08T22:45:00"
+}
+
+###
+
+POST {{RailWaysideMonitor_HostAddress}}/api/events
+Content-Type: application/json
+
+{
+    "deviceId": "SIGNAL-A",
     "newState": "Occupied",
     "timestamp": "2026-09-08T22:45:00"
 }
@@ -40,3 +67,5 @@ Content-Type: application/json
     "newState": "DNE",
     "timestamp": "2026-09-08T22:45:00"
 }
+
+###

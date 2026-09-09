@@ -69,6 +69,8 @@ List<WaysideEvent> events =
 
 ];
 
+List<WaysideAlert> alerts = [];
+
 // Endpoint for devices
 app.MapGet("/api/devices", () =>
 {
@@ -86,6 +88,14 @@ app.MapGet("/api/events", () =>
 })
 .WithName("GetWaysideEvents");
 
+// Endpoint for alerts
+app.MapGet("/api/alerts", () =>
+{
+    Console.WriteLine("GET /api/alerts");
+    return alerts;
+})
+.WithName("GetWaysideAlerts");
+
 // Post for events. Device state should be changed accordingly.
 app.MapPost("/api/events", (WaysideEvent newEvent) =>
 {   
@@ -94,18 +104,34 @@ app.MapPost("/api/events", (WaysideEvent newEvent) =>
     // checking for corresponding device
     var device = devices.FirstOrDefault(device => newEvent.DeviceId == device.Id);
 
-    if(device == null)
+    if (device == null)
     {
         return Results.NotFound("Device not found");
     } 
     
     // Check to see if state to update is valid
-    if(!Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
+    if (!Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
     {
         return Results.BadRequest($"Invalid device state: {newEvent.NewState}");
     }
 
-    device.State = parsedState;
+    // modify device state if event has different one.
+    if (parsedState != device.State)
+    {
+        // Alert handling
+        if (device.Type == "TrackCircuit" && parsedState == DeviceState.Occupied)
+        {
+            alerts.Add(new()
+            {
+                DeviceId = device.Id,
+                Message = $"Track section {device.Id} is occupied.",
+                Timestamp = newEvent.Timestamp
+            });
+        }
+
+        device.State = parsedState;
+    }
+
     events.Add(newEvent);
     return Results.Ok(newEvent);
 })
