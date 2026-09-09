@@ -4,3 +4,17 @@ GET {{RailWaysideMonitor_HostAddress}}/api/devices
 Accept: application/json
 
 ###
+
+GET {{RailWaysideMonitor_HostAddress}}/api/events
+Accept: application/json
+
+###
+
+POST {{RailWaysideMonitor_HostAddress}}/api/events
+Content-Type: application/json
+
+{
+    "deviceId": "TRACK-A",
+    "newState": "Occupied",
+    "timestamp": "2026-09-08T22:30:00"
+}

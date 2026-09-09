@@ -86,5 +86,15 @@ app.MapGet("/api/events", () =>
 })
 .WithName("GetWaysideEvents");
 
+// Post for events
+app.MapPost("/api/events", (WaysideEvent newEvent) =>
+{   
+    Console.WriteLine("POST /api/events");
+
+    events.Add(newEvent);
+    return events;
+})
+.WithName("PostWaysideEvent");
+
 app.Run();
 
