@@ -1,6 +1,6 @@
 @RailWaysideMonitor_HostAddress = http://localhost:5107
 
-GET {{RailWaysideMonitor_HostAddress}}/weatherforecast/
+GET {{RailWaysideMonitor_HostAddress}}/api/devices
 Accept: application/json
 
 ###

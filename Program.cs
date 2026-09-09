@@ -1,8 +1,19 @@
+using RailWaysideMonitor.Types;
+using RailWaysideMonitor.Enums;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// We want for enum names to get converted to strings
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter()
+    );
+});
 
 var app = builder.Build();
 
@@ -14,28 +25,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+var devices = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    new WaysideDevice
+    {
+        Id = "TRACK-A",
+        Type = "TrackCircuit",
+        State = DeviceState.Cleared
+    }
 };
 
-app.MapGet("/weatherforecast", () =>
+
+app.MapGet("/api/devices", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    Console.WriteLine("GET /api/devices");   
+
+    return devices;
 })
-.WithName("GetWeatherForecast");
+.WithName("GetWaysideDevices");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
