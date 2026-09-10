@@ -1,5 +1,6 @@
 using RailWaysideMonitor.Types;
 using RailWaysideMonitor.Enums;
+using RailWaysideMonitor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,58 +26,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-List<WaysideDevice> devices =
-[
-    new() {
-        Id = "TRACK-A",
-        Type = "TrackCircuit",
-        State = DeviceState.Cleared
-    },
-
-    new() {
-        Id = "SIGNAL-A",
-        Type = "Signal",
-        State = DeviceState.Occupied
-    },
-
-    new() {
-        Id = "SWITCH-A",
-        Type = "Switch",
-        State = DeviceState.Warning
-    }
-
-];
-
-List<WaysideEvent> events =
-[
-    new(){
-        DeviceId = "TRACK-A",
-        NewState = "Occupied",
-        Timestamp = new DateTime(2026,9,8,13,59,1)
-    },
-
-    new(){
-        DeviceId = "SIGNAL-A",
-        NewState = "Red",
-        Timestamp = new DateTime(2026,9,8,16,22,14)
-    },
-
-    new(){
-        DeviceId = "SWITCH-A",
-        NewState = "Reverse",
-        Timestamp = new DateTime(2026,9,8,8,43,45)
-    }
-
-];
-
-List<WaysideAlert> alerts = [];
+// Handler with access to lists
+var eventHandler = new WaysideEventHandler();
 
 // Endpoint for devices
 app.MapGet("/api/devices", () =>
 {
     Console.WriteLine("GET /api/devices");   
 
-    return devices;
+    return eventHandler.devices;
 })
 .WithName("GetWaysideDevices");
 
@@ -84,7 +42,7 @@ app.MapGet("/api/devices", () =>
 app.MapGet("/api/events", () =>
 {
     Console.WriteLine("GET /api/events");
-    return events;
+    return eventHandler.events;
 })
 .WithName("GetWaysideEvents");
 
@@ -92,7 +50,7 @@ app.MapGet("/api/events", () =>
 app.MapGet("/api/alerts", () =>
 {
     Console.WriteLine("GET /api/alerts");
-    return alerts;
+    return eventHandler.alerts;
 })
 .WithName("GetWaysideAlerts");
 
@@ -100,39 +58,19 @@ app.MapGet("/api/alerts", () =>
 app.MapPost("/api/events", (WaysideEvent newEvent) =>
 {   
     Console.WriteLine("POST /api/events");
-    
-    // checking for corresponding device
-    var device = devices.FirstOrDefault(device => newEvent.DeviceId == device.Id);
 
-    if (device == null)
+    var result = eventHandler.HandleEvent(newEvent);
+
+    if (result == Result.RESULT_NOT_FOUND)
     {
         return Results.NotFound("Device not found");
-    } 
-    
-    // Check to see if state to update is valid
-    if (!Enum.TryParse<DeviceState>(newEvent.NewState,true, out DeviceState parsedState))
+    }
+
+    if (result == Result.RESULT_BAD_REQUEST)
     {
         return Results.BadRequest($"Invalid device state: {newEvent.NewState}");
     }
 
-    // modify device state if event has different one.
-    if (parsedState != device.State)
-    {
-        // Alert handling
-        if (device.Type == "TrackCircuit" && parsedState == DeviceState.Occupied)
-        {
-            alerts.Add(new()
-            {
-                DeviceId = device.Id,
-                Message = $"Track section {device.Id} is occupied.",
-                Timestamp = newEvent.Timestamp
-            });
-        }
-
-        device.State = parsedState;
-    }
-
-    events.Add(newEvent);
     return Results.Ok(newEvent);
 })
 .WithName("PostWaysideEvent");

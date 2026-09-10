@@ -1,5 +1,6 @@
 ﻿using RailWaysideMonitor.Enums;
 using RailWaysideMonitor.Types;
+using RailWaysideMonitor.Services;
 
 namespace RailWaysideMonitor.Tests;
 
