@@ -82,7 +82,7 @@ public class WaysideEventHandler
 
             device.State = parsedState;
         }
-        
+
         events.Add(newEvent);
 
         return Result.RESULT_SUCCESS;
