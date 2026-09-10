@@ -6,6 +6,7 @@ namespace RailWaysideMonitor.Tests;
 
 public class UnitTest1
 {
+    // Initialize directly with wanted state.
     [Fact]
     public void WaysideDevice_InitializesWithExpectedState()
     {
@@ -20,6 +21,7 @@ public class UnitTest1
         Assert.Equal(DeviceState.Cleared,device.State);
     }
 
+    // Add event that modifies device state.
     [Fact]
     public void HandleEvent_ValidEvent_UpdatesDeviceState()
     {
@@ -41,5 +43,53 @@ public class UnitTest1
         Assert.Equal("TRACK-A", device.Id);
         Assert.Equal(DeviceState.Occupied, device.State);
         Assert.Equal(Result.RESULT_SUCCESS, result);
+    }
+
+    // Test with device id not found, no event should be added
+    [Fact]
+    public void HandleEvent_UnknownDevice_ReturnsNotFound()
+    {
+        var eventHandler = new WaysideEventHandler();
+
+        var countEvents = eventHandler.events.Count;
+
+        var newEvent = new WaysideEvent()
+        {
+            DeviceId = "TRACK-NOT-FOUND",
+            NewState = "Occupied",
+            Timestamp = new DateTime(2026,9,9,12,50,43)
+        };
+
+        var result = eventHandler.HandleEvent(newEvent);
+
+        // verifications
+        Assert.Equal(Result.RESULT_NOT_FOUND, result);
+        Assert.Equal(countEvents, eventHandler.events.Count);
+    }
+
+    // Test with invalid event state, no event should be added
+    [Fact]
+    public void HandleEvent_InvalidState_ReturnsBadRequest()
+    {
+        var eventHandler = new WaysideEventHandler();
+
+        var countEvents = eventHandler.events.Count;
+
+        var newEvent = new WaysideEvent()
+        {
+            DeviceId = "TRACK-A",
+            NewState = "InvalidState",
+            Timestamp = new DateTime(2026,9,9,12,50,43)
+        };
+
+        var result = eventHandler.HandleEvent(newEvent);
+        
+        var device = eventHandler.devices.FirstOrDefault(device => newEvent.DeviceId == device.Id);
+
+        // verifications
+        Assert.NotNull(device);
+        Assert.Equal(Result.RESULT_BAD_REQUEST, result);
+        Assert.Equal(countEvents, eventHandler.events.Count);
+        Assert.Equal(DeviceState.Cleared, device.State);
     }
 }
