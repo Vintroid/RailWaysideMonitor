@@ -92,4 +92,27 @@ public class UnitTest1
         Assert.Equal(countEvents, eventHandler.events.Count);
         Assert.Equal(DeviceState.Cleared, device.State);
     }
+
+    // Test if device TRACK-A state change from Cleared to Occupied creates an alert properly.
+    [Fact]
+    public void HandleEvent_TrackBecomesOccupied_CreatesAlert()
+    {
+        var eventHandler = new WaysideEventHandler();
+
+        var alertCount = eventHandler.alerts.Count;
+
+        var newEvent = new WaysideEvent()
+        {
+            DeviceId = "TRACK-A",
+            NewState = "Occupied",
+            Timestamp = new DateTime(2026,9,10,13,45,45)
+        };
+
+        var result = eventHandler.HandleEvent(newEvent);
+
+        // verifications
+        Assert.Equal(Result.RESULT_SUCCESS, result);
+        Assert.Equal(alertCount + 1, eventHandler.alerts.Count);
+        Assert.Equal("TRACK-A", eventHandler.alerts.Last().DeviceId);
+    }
 }
