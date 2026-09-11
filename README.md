@@ -1,7 +1,7 @@
 # RailWaysideMonitor
 
 ## Overview && Current Features
-This project is a simple wayside monitoring API. It manages and processes a simulation of railway equipment devices and events. Furthermore, the current device state can be maintained, or modified by said events. Finally, the API can generate alerts in response to state changes, and maintain the alert history.
+This project is a simple wayside monitoring API. It manages and processes a simulation of railway equipment devices and events. Furthermore, the current device state can be maintained, or modified by said events. Finally, the API can generate alerts in response to state changes, and maintain the alert history. There are currently 5 automated tests to pass.
 
 - Simulated Wayside devices.
 - In-memory event & alert history 
@@ -11,11 +11,13 @@ This project is a simple wayside monitoring API. It manages and processes a simu
 - Device state updates
 - Request validation with appropriate HTTP responses.
 - Manual API test requests.
+- xUnit automated tests
 
-## What is used?
+## Technologies?
 .NET 10
 ASP.NET Core Minimal APIs
 REST
+Docker
 
 ## API Endpoints
 GET /api/devices
@@ -35,6 +37,7 @@ GET /api/alerts
 - Command Prompt
 - dotnet run
 - .http file has test requests
+- dotnet test into automated test folder
 
 ## Current Limitations
 - Data is stored in memory and reset when application restarts.
@@ -43,7 +46,6 @@ GET /api/alerts
 
 ## Planned Improvements
 - PostgreSQL persistence
-- Docker containerization
 - Automated unit && integration tests
 - Separate device simulator component
 - Device-specific state models
